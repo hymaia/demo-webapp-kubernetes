@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter App</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1>Counter</h1>
+    <div id="value" class="my-3">0</div>
+    <h1>Permanent counter</h1>
+    <div id="permanent-value" class="my-3">0</div>
+    <button class="btn btn-primary" id="increment-btn">Increment</button>
+    <button class="btn btn-secondary" id="reset-btn">Reset</button>
+    <button class="btn btn-success" id="save-btn">Save</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let counter = 0; // Initialize counter
+        let permanentCounter = 0; // Initialize counter
+        // Fetch the initial counter value from the server
+        fetch('/get_value').then(response => response.json()).then(data => {
+            $('#value').text(data.value);
+            $('#permanent-value').text(data.permanentValue);
+            counter = data.value; // Set counter to fetched value
+            permanentCounter = data.permanentValue; // Set counter to fetched value
+        });
+
+        $('#increment-btn').click(function() {
+            counter += 1;
+            permanentCounter += 1;
+            $('#value').text(counter);
+            $('#permanent-value').text(permanentCounter);
+            $.ajax({
+                url: '/permanent_save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({'permanentValue': permanentCounter}),
+                success: function(response) {
+                    console.log('Permanent value saved');
+                }
+            });
+        });
+
+        $('#reset-btn').click(function() {
+            counter = 0;
+            $('#value').text(counter);
+        });
+
+        $('#save-btn').click(function() {
+            $.ajax({
+                url: '/save',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({'value': counter}),
+                success: function(response) {
+                    console.log('Value saved');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

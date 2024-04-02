@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "demo-webapp-kubernetes"
+version = "0.1.0"
+description = ""
+authors = ["franck cussac <franck.cussac@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask = "^3.0.2"
+jinja2 = "^3.1.3"
+redis = "^5.0.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
